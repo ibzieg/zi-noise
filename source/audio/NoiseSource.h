@@ -11,8 +11,7 @@
 
 using namespace juce;
 
-class NoiseSource : public AudioSource
-{
+class NoiseSource : public AudioSource {
 public:
     const static int WAVE_TABLE_SIZE = 16384;
     const double PITCH_SMOOTH_SECONDS = 0.001;
@@ -30,20 +29,22 @@ public:
     //            const int waveCount);
     //    void updateImage(Image img);
 
-    NoiseSource() : _smoothFreq (0.0), _modOscRatioSmooth (0.0), _lfoOscRatioSmooth (0.0), _phaseModAmountSmooth (0.0), _rng (RANDOM_SEED_VALUE)
-    { }
+    NoiseSource() : _smoothFreq(0.0), _modOscRatioSmooth(0.0), _lfoOscRatioSmooth(0.0), _phaseModAmountSmooth(0.0),
+                    _rng(RANDOM_SEED_VALUE) {}
 
 
-    void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
-    void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
+    void prepareToPlay(int samplesPerBlockExpected, double sampleRate) override;
+
+    void getNextAudioBlock(const AudioSourceChannelInfo &bufferToFill) override;
+
     void releaseResources() override;
 
-    void startNote (int midiNoteNumber, float velocity);
-    void stopNote (float velocity);
+    void startNote(int midiNoteNumber, float velocity);
+
+    void stopNote(float velocity);
 
     // --------------------------------------------
-    void setSynthOptions (SynthOptions& options)
-    {
+    void setSynthOptions(SynthOptions &options) {
         synthOptions = options;
     }
 
@@ -51,7 +52,7 @@ private:
     SynthOptions synthOptions;
 
     /** Size of wave table*/
-    int _waveTableSize { WAVE_TABLE_SIZE };
+    int _waveTableSize{WAVE_TABLE_SIZE};
     float _waveTableSin[WAVE_TABLE_SIZE]{};
     float _waveTableSaw[WAVE_TABLE_SIZE]{};
     float _waveTableSqr[WAVE_TABLE_SIZE]{};
@@ -59,24 +60,24 @@ private:
     bool _isPreparedToPlay = false;
     double _sampleRate{};
 
-    int _oscType { 0 };
+    int _oscType{0};
 
     SmoothedValue<double> _smoothFreq;
-    double _carrierOscFreq { 0.0 };
-    double _carrierOscPhase { 0.0 }; // phase in radians
+    double _carrierOscFreq{0.0};
+    double _carrierOscPhase{0.0}; // phase in radians
 
-    double _modOscFreq { 0.0 };
-    double _modOscPhase { 0.0 }; // phase in radians
+    double _modOscFreq{0.0};
+    double _modOscPhase{0.0}; // phase in radians
     SmoothedValue<float> _modOscRatioSmooth;
 
-    double _lfoOscFreq { 0.0 };
-    double _lfoOscPhase { 0.0 }; // phase in radians
+    double _lfoOscFreq{0.0};
+    double _lfoOscPhase{0.0}; // phase in radians
     SmoothedValue<float> _lfoOscRatioSmooth;
 
     SmoothedValue<float> _phaseModAmountSmooth;
     ADSR _modEnv;
 
-    double _velocity { 0.0 };
+    double _velocity{0.0};
 
     Random _rng;
     float _noiseValue = 0.0;
@@ -84,6 +85,8 @@ private:
     int _samplesUntilNextRandom = 0;
 
     void resetPhase();
+
     void updateFreqFactors();
-    float* getWaveTable (int type);
+
+    float *getWaveTable(int type);
 };

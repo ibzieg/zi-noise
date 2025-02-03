@@ -24,8 +24,7 @@
 
 using namespace juce;
 
-struct AudioParameters
-{
+struct AudioParameters {
     enum class Parameter : int {
         ModFreqRatio,
         PhaseModAmount,
@@ -33,19 +32,22 @@ struct AudioParameters
         AmpEnvDecay,
         AmpEnvSustain,
         AmpEnvRelease,
+        AmpDrone,
         ModEnvAttack,
         ModEnvDecay,
         ModEnvSustain,
         ModEnvRelease,
         LFOFreqRatio,
-        LFOModAmount
+        LFOModAmount,
+        GrainLengthMin,
+        GrainLengthMax
     };
 
-    static String paramName (Parameter name);
+    static String paramName(Parameter name);
 
-    static ParameterID paramID (Parameter name);
+    static ParameterID paramID(Parameter name);
 
-    static ParameterID paramID (String& name);
+    static ParameterID paramID(String &name);
 
     static AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
 };

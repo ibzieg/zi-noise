@@ -18,8 +18,7 @@
  */
 #pragma once
 
-namespace AudioConfig
-{
+namespace AudioConfig {
     // TODO Do we even need this file?
 
     const static int MIDI_MAX_VALUE = 127;

@@ -6,8 +6,7 @@ using namespace juce;
 
 using Parameter = AudioParameters::Parameter;
 
-struct SynthOptions
-{
+struct SynthOptions {
 public:
     float modFreqRatio = 3.0f / 2.0f;
     float phaseModAmount = 0.25f;
@@ -20,59 +19,72 @@ public:
     float ampEnvDecay = 0.1f;
     float ampEnvSustain = 0.8f;
     float ampEnvRelease = 0.1f;
+    bool ampDrone = false;
 
     float modEnvAttack = 0.01f;
     float modEnvDecay = 0.1f;
     float modEnvSustain = 0.8f;
     float modEnvRelease = 0.1f;
 
+    float grainLengthMin = 1.0f;
+    float grainLengthMax = 25.0f;
+
     SynthOptions() = default;
 
-    explicit SynthOptions (juce::AudioProcessorValueTreeState& params)
-    {
-        setState (params);
+    explicit SynthOptions(juce::AudioProcessorValueTreeState &params) {
+        setState(params);
     }
 
-    void setState (juce::AudioProcessorValueTreeState& params)
-    {
-        modFreqRatio = params.getParameterAsValue (
-                                 AudioParameters::paramName (Parameter::ModFreqRatio))
-                           .getValue();
-        lfoFreqRatio = params.getParameterAsValue (
-                                 AudioParameters::paramName (Parameter::LFOFreqRatio))
-                           .getValue();
-        lfoModAmount = params.getParameterAsValue (
-                                 AudioParameters::paramName (Parameter::LFOModAmount))
-                           .getValue();
+    void setState(juce::AudioProcessorValueTreeState &params) {
+        modFreqRatio = params.getParameterAsValue(
+                        AudioParameters::paramName(Parameter::ModFreqRatio))
+                .getValue();
+        lfoFreqRatio = params.getParameterAsValue(
+                        AudioParameters::paramName(Parameter::LFOFreqRatio))
+                .getValue();
+        lfoModAmount = params.getParameterAsValue(
+                        AudioParameters::paramName(Parameter::LFOModAmount))
+                .getValue();
 
-        phaseModAmount = params.getParameterAsValue (
-                                   AudioParameters::paramName (Parameter::PhaseModAmount))
-                             .getValue();
+        phaseModAmount = params.getParameterAsValue(
+                        AudioParameters::paramName(Parameter::PhaseModAmount))
+                .getValue();
 
-        ampEnvAttack = params.getParameterAsValue (
-                                 AudioParameters::paramName (Parameter::AmpEnvAttack))
-                           .getValue();
-        ampEnvDecay = params.getParameterAsValue (
-                                AudioParameters::paramName (Parameter::AmpEnvDecay))
-                          .getValue();
-        ampEnvSustain = params.getParameterAsValue (
-                                  AudioParameters::paramName (Parameter::AmpEnvSustain))
-                            .getValue();
-        ampEnvRelease = params.getParameterAsValue (
-                                  AudioParameters::paramName (Parameter::AmpEnvRelease))
-                            .getValue();
+        ampEnvAttack = params.getParameterAsValue(
+                        AudioParameters::paramName(Parameter::AmpEnvAttack))
+                .getValue();
+        ampEnvDecay = params.getParameterAsValue(
+                        AudioParameters::paramName(Parameter::AmpEnvDecay))
+                .getValue();
+        ampEnvSustain = params.getParameterAsValue(
+                        AudioParameters::paramName(Parameter::AmpEnvSustain))
+                .getValue();
+        ampEnvRelease = params.getParameterAsValue(
+                        AudioParameters::paramName(Parameter::AmpEnvRelease))
+                .getValue();
+        ampDrone = params.getParameterAsValue(
+                        AudioParameters::paramName(Parameter::AmpDrone))
+                .getValue();
 
-        modEnvAttack = params.getParameterAsValue (
-                                 AudioParameters::paramName (Parameter::ModEnvAttack))
-                           .getValue();
-        modEnvDecay = params.getParameterAsValue (
-                                AudioParameters::paramName (Parameter::ModEnvDecay))
-                          .getValue();
-        modEnvSustain = params.getParameterAsValue (
-                                  AudioParameters::paramName (Parameter::ModEnvSustain))
-                            .getValue();
-        modEnvRelease = params.getParameterAsValue (
-                                  AudioParameters::paramName (Parameter::ModEnvRelease))
-                            .getValue();
+        modEnvAttack = params.getParameterAsValue(
+                        AudioParameters::paramName(Parameter::ModEnvAttack))
+                .getValue();
+        modEnvDecay = params.getParameterAsValue(
+                        AudioParameters::paramName(Parameter::ModEnvDecay))
+                .getValue();
+        modEnvSustain = params.getParameterAsValue(
+                        AudioParameters::paramName(Parameter::ModEnvSustain))
+                .getValue();
+        modEnvRelease = params.getParameterAsValue(
+                        AudioParameters::paramName(Parameter::ModEnvRelease))
+                .getValue();
+
+        grainLengthMin = params.getParameterAsValue(
+                        AudioParameters::paramName(Parameter::GrainLengthMin))
+                .getValue();
+
+        grainLengthMax = params.getParameterAsValue(
+                        AudioParameters::paramName(Parameter::GrainLengthMax))
+                .getValue();
     }
 };

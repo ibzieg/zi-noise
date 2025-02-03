@@ -9,33 +9,39 @@
 #include <zi-juce-tools/zi-juce-tools.h>
 
 //==============================================================================
-class PluginEditor : public juce::AudioProcessorEditor
-{
+class PluginEditor : public juce::AudioProcessorEditor {
 public:
-    explicit PluginEditor (PluginProcessor&);
+    explicit PluginEditor(PluginProcessor &);
+
     ~PluginEditor() override;
 
     //==============================================================================
-    void paint (juce::Graphics&) override;
+    void paint(juce::Graphics &) override;
+
     void resized() override;
 
 private:
-    void setupSlider (
-        const juce::String& parameterID,
-        std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment>& sliderAttachment,
-        LabelSlider& slider,
-        Slider::SliderStyle sliderStyle,
-        LookAndFeel_V4* lookAndFeel);
+    void setupSlider(
+            const juce::String &parameterID,
+            LabelSlider &slider,
+            Slider::SliderStyle sliderStyle,
+            LookAndFeel_V4 *lookAndFeel);
 
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
-    PluginProcessor& processorRef;
+    PluginProcessor &processorRef;
     std::unique_ptr<melatonin::Inspector> inspector;
-    juce::TextButton inspectButton { "Inspect the UI" };
+    juce::TextButton inspectButton{"Inspect the UI"};
+
+
+    // Buttons -----------------------------------------------------------------
+    ToggleButton _ampDroneButton{"Drone"};
+    std::unique_ptr<AudioProcessorValueTreeState::ButtonAttachment> _ampDroneButtonAttachment;
 
     // -------------------------------------------------------------------------
     Theme::LookMidi _lookMidi;
     Theme::LookNote _lookNote;
+    Theme::LookSeed _lookSeed;
 
     LabelSlider _modFreqRatioSlider;
     LabelSlider _lfoFreqRatioSlider;
@@ -52,20 +58,9 @@ private:
     LabelSlider _modEnvSustainSlider;
     LabelSlider _modEnvReleaseSlider;
 
-    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> _modFreqRatioSliderAttachment;
-    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> _lfoFreqRatioSliderAttachment;
-    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> _lfoModAmountSliderAttachment;
-    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> _phaseModAmountSliderAttachment;
+    LabelSlider _grainLengthMinSlider;
+    LabelSlider _grainLengthMaxSlider;
 
-    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> _ampEnvAttackSliderAttachment;
-    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> _ampEnvDecaySliderAttachment;
-    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> _ampEnvSustainSliderAttachment;
-    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> _ampEnvReleaseSliderAttachment;
-
-    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> _modEnvAttackSliderAttachment;
-    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> _modEnvDecaySliderAttachment;
-    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> _modEnvSustainSliderAttachment;
-    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> _modEnvReleaseSliderAttachment;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginEditor)
 };

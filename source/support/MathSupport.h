@@ -6,8 +6,7 @@
 
 using namespace juce;
 
-class MathSupport
-{
+class MathSupport {
 public:
     constexpr static const double PI2 = 2.0 * MathConstants<double>::pi;
 };

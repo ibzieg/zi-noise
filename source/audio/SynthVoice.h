@@ -9,16 +9,21 @@
 
 using namespace juce;
 
-class SynthVoice : public juce::SynthesiserVoice
-{
+class SynthVoice : public juce::SynthesiserVoice {
 public:
-    bool canPlaySound (SynthesiserSound* sound) override;
-    void startNote (int midiNoteNumber, float velocity, SynthesiserSound* sound, int currentPitchWheelPosition) override;
-    void stopNote (float velocity, bool allowTailOff) override;
-    void controllerMoved (int controllerNumber, int newControllerValue) override;
-    void pitchWheelMoved (int newPitchWheelValue) override;
-    void prepareToPlay (double sampleRate, int samplesPerBlock, int outputChannels);
-    void renderNextBlock (AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override;
+    bool canPlaySound(SynthesiserSound *sound) override;
+
+    void startNote(int midiNoteNumber, float velocity, SynthesiserSound *sound, int currentPitchWheelPosition) override;
+
+    void stopNote(float velocity, bool allowTailOff) override;
+
+    void controllerMoved(int controllerNumber, int newControllerValue) override;
+
+    void pitchWheelMoved(int newPitchWheelValue) override;
+
+    void prepareToPlay(double sampleRate, int samplesPerBlock, int outputChannels);
+
+    void renderNextBlock(AudioBuffer<float> &outputBuffer, int startSample, int numSamples) override;
 
     //    void updateAmpEnvParams (const float attack, const float decay, const float sustain, const float release);
     //    void updateModEnvParams (const float attack, const float hold, const float decay);
@@ -29,14 +34,13 @@ public:
     //    void updateVoiceParams (const float gain);
     //    void updateImage (Image img);
 
-    void setSynthOptions (SynthOptions& options)
-    {
+    void setSynthOptions(SynthOptions &options) {
         synthOptions = options;
-        _wave.setSynthOptions (options);
+        _wave.setSynthOptions(options);
     }
 
 private:
-    bool _isPreparedToPlay { false }; // TODO: add this to PluginProcessor too
+    bool _isPreparedToPlay{false}; // TODO: add this to PluginProcessor too
 
     SynthOptions synthOptions;
 
