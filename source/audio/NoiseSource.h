@@ -11,12 +11,14 @@
 
 using namespace juce;
 
-class FMOperatorSource : public AudioSource
+class NoiseSource : public AudioSource
 {
 public:
     const static int WAVE_TABLE_SIZE = 16384;
     const double PITCH_SMOOTH_SECONDS = 0.001;
     const double PHASE_MOD_SMOOTH_SECONDS = 0.001;
+
+    const int RANDOM_SEED_VALUE = 31337;
 
     //    void updateParams(
     //            float ratio,
@@ -27,6 +29,10 @@ public:
     //            int oscType,
     //            const int waveCount);
     //    void updateImage(Image img);
+
+    NoiseSource() : _smoothFreq (0.0), _modOscRatioSmooth (0.0), _lfoOscRatioSmooth (0.0), _phaseModAmountSmooth (0.0), _rng (RANDOM_SEED_VALUE)
+    { }
+
 
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill) override;
@@ -46,12 +52,12 @@ private:
 
     /** Size of wave table*/
     int _waveTableSize { WAVE_TABLE_SIZE };
-    float _waveTableSin[WAVE_TABLE_SIZE];
-    float _waveTableSaw[WAVE_TABLE_SIZE];
-    float _waveTableSqr[WAVE_TABLE_SIZE];
+    float _waveTableSin[WAVE_TABLE_SIZE]{};
+    float _waveTableSaw[WAVE_TABLE_SIZE]{};
+    float _waveTableSqr[WAVE_TABLE_SIZE]{};
 
     bool _isPreparedToPlay = false;
-    double _sampleRate;
+    double _sampleRate{};
 
     int _oscType { 0 };
 
@@ -71,6 +77,11 @@ private:
     ADSR _modEnv;
 
     double _velocity { 0.0 };
+
+    Random _rng;
+    float _noiseValue = 0.0;
+    float _noiseDelta = 0.0;
+    int _samplesUntilNextRandom = 0;
 
     void resetPhase();
     void updateFreqFactors();

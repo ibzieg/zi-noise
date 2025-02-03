@@ -5,7 +5,7 @@
 
 //#include "ADSREnvelope.h"
 #include "../models/SynthOptions.h"
-#include "FMOperatorSource.h"
+#include "NoiseSource.h"
 
 using namespace juce;
 
@@ -50,5 +50,5 @@ private:
 
     dsp::Gain<float> _voiceGain;
     dsp::LadderFilter<float> _ladderFilter;
-    FMOperatorSource _wave;
+    NoiseSource _wave;
 };

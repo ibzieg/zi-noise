@@ -16,10 +16,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "FMOperatorSource.h"
+#include "NoiseSource.h"
 #include "../support/MathSupport.h"
 
-void FMOperatorSource::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
+void NoiseSource::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
     // Initialize wave table
     _waveTableSize = WAVE_TABLE_SIZE;
@@ -68,19 +68,19 @@ void FMOperatorSource::prepareToPlay (int samplesPerBlockExpected, double sample
     _isPreparedToPlay = true;
 }
 
-void FMOperatorSource::releaseResources()
+void NoiseSource::releaseResources()
 {
     // Do nothing ?
 }
 
-void FMOperatorSource::resetPhase()
+void NoiseSource::resetPhase()
 {
     _carrierOscPhase = 0.0;
     _modOscPhase = 0.0;
     _lfoOscPhase = 0.0;
 }
 
-void FMOperatorSource::updateFreqFactors()
+void NoiseSource::updateFreqFactors()
 {
     //    for (int i = 0; i < _spectraCount; i++)
     //    {
@@ -89,7 +89,7 @@ void FMOperatorSource::updateFreqFactors()
     //    }
 }
 
-float* FMOperatorSource::getWaveTable (int type)
+float* NoiseSource::getWaveTable (int type)
 {
     switch (type)
     {
@@ -102,7 +102,7 @@ float* FMOperatorSource::getWaveTable (int type)
     }
 }
 
-void FMOperatorSource::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
+void NoiseSource::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
 {
     jassert (_isPreparedToPlay);
 
@@ -177,7 +177,42 @@ void FMOperatorSource::getNextAudioBlock (const AudioSourceChannelInfo& bufferTo
         jassert (waveIndex >= 0);
         const float carrierWaveValue = waveTable[waveIndex];
 
-        const float sampleValue = carrierWaveValue;
+        float sampleValue = carrierWaveValue;
+
+
+        // Noise Source vvv
+
+        int minRandomInt = 1;
+        int maxRandomInt = static_cast<int>(synthOptions.lfoModAmount * 1000);
+
+        if (_samplesUntilNextRandom <= 0)
+        {
+            _noiseValue = _rng.nextFloat() * 2.0f - 1.0f;
+            _noiseDelta = _rng.nextFloat() * 2.0f - 1.0f;
+
+            // TODO Factor in sample rate, so that we can have a millisecond range for max and min instead of samples
+            _samplesUntilNextRandom = _rng.nextInt(Range<int> {minRandomInt, maxRandomInt });
+        } else {
+            _samplesUntilNextRandom -= 1;
+        }
+
+        _noiseValue += _noiseDelta;
+        if (_noiseValue > 1.0f)
+        {
+            _noiseValue = 1.0f;
+            _noiseDelta = -_noiseDelta;
+        } else if (_noiseValue < -1.0f) {
+            _noiseValue = -1.0f;
+            _noiseDelta = -_noiseDelta;
+        }
+
+        sampleValue = _noiseValue;
+
+        // Noise Source ^^^
+
+
+
+
 
         // Apply stereo tilt and set channel sample values
         for (size_t ch = 0; ch < block.getNumChannels(); ++ch)
@@ -190,7 +225,7 @@ void FMOperatorSource::getNextAudioBlock (const AudioSourceChannelInfo& bufferTo
     }
 }
 
-void FMOperatorSource::startNote (const int midiNoteNumber, float velocity)
+void NoiseSource::startNote (const int midiNoteNumber, float velocity)
 {
     _velocity = velocity;
     _carrierOscFreq = MidiMessage::getMidiNoteInHertz (midiNoteNumber);
@@ -203,64 +238,7 @@ void FMOperatorSource::startNote (const int midiNoteNumber, float velocity)
     resetPhase();
 }
 
-void FMOperatorSource::stopNote (float velocity)
+void NoiseSource::stopNote (float velocity)
 {
     _modEnv.noteOff();
 }
-//
-//void SpectraSynthSource::updateParams(
-//        float ratio,
-//        float speed,
-//        const float start,
-//        float tilt,
-//        int patternType,
-//        int oscType,
-//        const int waveCount)
-//{
-//    bool needUpdateFreqFactors = false;
-//
-//    _speed = speed;
-//    _start = start;
-//    _tilt = tilt;
-//    _oscType = oscType;
-//
-//    if (_ratio != ratio)
-//    {
-//        _ratio = ratio;
-//        needUpdateFreqFactors = true;
-//    }
-//
-//    if (_patternType != patternType) {
-//        _patternType = patternType;
-//        needUpdateFreqFactors = true;
-//    }
-//
-//    if (_spectraCount != waveCount)
-//    {
-//        _spectraCount = waveCount;
-//        needUpdateFreqFactors = true;
-//    }
-//
-//    if (needUpdateFreqFactors)
-//    {
-//        updateFreqFactors();
-//    }
-//}
-
-//void SpectraSynthSource::updateImage(Image img) {
-//    if (_spectraImage != img) {
-//        _spectraImage = img;
-//
-//        int spectraWidth = audio::SPECTRA_IMAGE_WIDTH;
-//        int spectraHeight = audio::SPECTRA_IMAGE_HEIGHT;
-//
-//        for (int x = 0; x < spectraWidth; x++) {
-//            for (int y = 0; y < spectraHeight; y++) {
-//                Colour c = _spectraImage.getPixelAt(x, y);
-//                float brightness = c.getPerceivedBrightness();
-//                int i = (x * audio::SPECTRA_IMAGE_HEIGHT) + y;
-//                _spectraImageBuffer[i] = brightness;
-//            }
-//        }
-//    }
-//}
